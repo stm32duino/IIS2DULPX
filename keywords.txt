@@ -1,0 +1,74 @@
+#######################################
+# Syntax Coloring Map For IIS2DULPX
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+IIS2DULPXSensor	KEYWORD1
+IIS2DULPXStatusTypeDef KEYWORD1
+IIS2DULPX_SensorIntPin_t KEYWORD1
+IIS2DULPX_Power_Mode_t KEYWORD1
+IIS2DULPX_AxesRaw_t KEYWORD1
+IIS2DULPX_Axes_t KEYWORD1
+IIS2DULPX_Event_Status_t KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin KEYWORD2
+end KEYWORD2
+ExitDeepPowerDownI2C KEYWORD2
+ExitDeepPowerDownSPI KEYWORD2
+ReadID KEYWORD2
+Enable_X KEYWORD2
+Disable_X KEYWORD2
+Get_X_Sensitivity KEYWORD2
+Get_X_OutputDataRate KEYWORD2
+Set_X_OutputDataRate KEYWORD2
+Set_X_OutputDataRate_With_Mode KEYWORD2
+Get_X_FullScale KEYWORD2
+Set_X_FullScale KEYWORD2
+Get_X_AxesRaw KEYWORD2
+Get_X_Axes KEYWORD2
+Read_Reg KEYWORD2
+Write_Reg KEYWORD2
+Set_Interrupt_Latch KEYWORD2
+Enable_X_DRDY_Interrupt KEYWORD2
+Disable_X_DRDY_Interrupt KEYWORD2
+Set_X_SelfTest KEYWORD2
+Get_X_DRDY_Status KEYWORD2
+Get_X_Init_Status KEYWORD2
+Get_X_Event_Status KEYWORD2
+Enable_Wake_Up_Detection KEYWORD2
+Disable_Wake_Up_Detection KEYWORD2
+Set_Wake_Up_Threshold KEYWORD2
+Set_Wake_Up_Duration KEYWORD2
+Enable_6D_Orientation KEYWORD2
+Disable_6D_Orientation KEYWORD2
+Set_6D_Orientation_Threshold KEYWORD2
+Get_6D_Orientation_XL KEYWORD2
+Get_6D_Orientation_XH KEYWORD2
+Get_6D_Orientation_YL KEYWORD2
+Get_6D_Orientation_YH KEYWORD2
+Get_6D_Orientation_ZL KEYWORD2
+Get_6D_Orientation_ZH KEYWORD2
+Set_Mem_Bank KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+IIS2DULPX_OK	LITERAL1
+IIS2DULPX_ERROR	LITERAL1
+IIS2DULPX_ACC_SENSITIVITY_FOR_FS_2G LITERAL1
+IIS2DULPX_ACC_SENSITIVITY_FOR_FS_4G LITERAL1
+IIS2DULPX_ACC_SENSITIVITY_FOR_FS_8G LITERAL1
+IIS2DULPX_ACC_SENSITIVITY_FOR_FS_16G LITERAL1
+IIS2DULPX_QVAR_GAIN LITERAL1
+IIS2DULPX_QVAR_GAIN_MULTIPL_0_5X LITERAL1
+IIS2DULPX_QVAR_GAIN_MULTIPL_1X LITERAL1
+IIS2DULPX_QVAR_GAIN_MULTIPL_2X LITERAL1
+IIS2DULPX_QVAR_GAIN_MULTIPL_4X LITERAL1
