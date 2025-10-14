@@ -99,33 +99,6 @@ typedef struct {
 #define PROPERTY_DISABLE                (0U)
 #define PROPERTY_ENABLE                 (1U)
 
-/** @addtogroup  Interfaces_Functions
-  * @brief       This section provide a set of functions used to read and
-  *              write a generic register of the device.
-  *              MANDATORY: return 0 -> no Error.
-  * @{
-  *
-  */
-
-typedef int32_t (*iis2dulpx_write_ptr)(void *ctx, uint8_t reg, uint8_t *data, uint16_t len);
-typedef int32_t (*iis2dulpx_read_ptr)(void *ctx, uint8_t reg, uint8_t *data, uint16_t len);
-typedef void (*iis2dulpx_mdelay_ptr)(uint32_t millisec);
-
-typedef struct {
-  /** Component mandatory fields **/
-  iis2dulpx_write_ptr  write_reg;
-  iis2dulpx_read_ptr   read_reg;
-  /** Component optional fields **/
-  iis2dulpx_mdelay_ptr   mdelay;
-  /** Customizable optional pointer **/
-  void *handle;
-} iis2dulpx_ctx_t;
-
-/**
-  * @}
-  *
-  */
-
 #endif /* MEMS_SHARED_TYPES */
 
 #ifndef MEMS_UCF_SHARED_TYPES
@@ -153,6 +126,33 @@ typedef struct {
   */
 
 #endif /* MEMS_UCF_SHARED_TYPES */
+
+/**
+  * @}
+  *
+  */
+
+/** @addtogroup  Interfaces_Functions
+  * @brief       This section provide a set of functions used to read and
+  *              write a generic register of the device.
+  *              MANDATORY: return 0 -> no Error.
+  * @{
+  *
+  */
+
+typedef int32_t (*iis2dulpx_write_ptr)(void *ctx, uint8_t reg, uint8_t *data, uint16_t len);
+typedef int32_t (*iis2dulpx_read_ptr)(void *ctx, uint8_t reg, uint8_t *data, uint16_t len);
+typedef void (*iis2dulpx_mdelay_ptr)(uint32_t millisec);
+
+typedef struct {
+  /** Component mandatory fields **/
+  iis2dulpx_write_ptr  write_reg;
+  iis2dulpx_read_ptr   read_reg;
+  /** Component optional fields **/
+  iis2dulpx_mdelay_ptr   mdelay;
+  /** Customizable optional pointer **/
+  void *handle;
+} iis2dulpx_ctx_t;
 
 /**
   * @}

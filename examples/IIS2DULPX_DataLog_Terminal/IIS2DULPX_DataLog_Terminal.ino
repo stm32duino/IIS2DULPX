@@ -1,7 +1,7 @@
 /*
    @file    IIS2DULPX_DataLog_Terminal.ino
    @author  STMicroelectronics
-   @brief   Example to use the IIS2DULPX accelerometer sensor (X-axis only)
+   @brief   Example to use the IIS2DULPX accelerometer sensor
  *******************************************************************************
    Copyright (c) 2025, STMicroelectronics
    All rights reserved.
