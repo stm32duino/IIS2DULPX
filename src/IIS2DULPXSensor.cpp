@@ -2,8 +2,8 @@
  ******************************************************************************
  * @file    IIS2DULPXSensor.cpp
  * @author  STMicroelectronics
- * @version V1.0.0
- * @date    30 May 2025
+ * @version V1.1.0
+ * @date    September 2026
  * @brief   Implementation of a IIS2DULPX sensor.
  ******************************************************************************
  * @attention
@@ -36,7 +36,7 @@
  */
 /* Includes ------------------------------------------------------------------*/
 #include "IIS2DULPXSensor.h"
-#include "iis2dulpx_reg.h"
+
 /* Class Implementation ------------------------------------------------------*/
 /** Constructor
  * @param i2c object of an helper class which handles the I2C peripheral
@@ -48,6 +48,10 @@ IIS2DULPXSensor::IIS2DULPXSensor(TwoWire *i2c, uint8_t address) : dev_i2c(i2c), 
   reg_ctx.read_reg = IIS2DULPX_io_read;
   reg_ctx.handle = (void *)this;
   dev_spi = NULL;
+#if defined(I3C_SUPPORTED)
+  dev_i3c = NULL;
+#endif
+  bus_type = IIS2DULPX_I2C_BUS;
   is_initialized = 0;
   acc_is_enabled = 0;
 }
@@ -62,14 +66,41 @@ IIS2DULPXSensor::IIS2DULPXSensor(SPIClass *spi, int cs_pin, uint32_t spi_speed) 
   reg_ctx.read_reg = IIS2DULPX_io_read;
   reg_ctx.handle = (void *)this;
   dev_i2c = NULL;
+#if defined(I3C_SUPPORTED)
+  dev_i3c = NULL;
+#endif
+  bus_type = IIS2DULPX_SPI_4WIRES_BUS;
   is_initialized = 0;
   acc_is_enabled = 0;
 }
+#if defined(I3C_SUPPORTED)
+IIS2DULPXSensor::IIS2DULPXSensor(I3CBus *i3c, uint8_t static_addr7) : dev_i3c(i3c), address(static_addr7), i3c_static7(static_addr7), i3c_dyn7(0)
+{
+  reg_ctx.write_reg = IIS2DULPX_io_write;
+  reg_ctx.read_reg = IIS2DULPX_io_read;
+  reg_ctx.handle = (void *)this;
+  dev_i2c = NULL;
+  dev_spi = NULL;
+  is_initialized = 0;
+  acc_is_enabled = 0;
+  bus_type = IIS2DULPX_I3C_BUS;
+}
+
+uint8_t IIS2DULPXSensor::getStaticAddress() const
+{
+  return i3c_static7;
+}
+
+uint8_t IIS2DULPXSensor::getDynAddress() const
+{
+  return i3c_dyn7;
+}
+#endif
 /**
  * @brief  Configure the sensor in order to be used
  * @retval 0 in case of success, an error code otherwise
  */
-IIS2DULPXStatusTypeDef IIS2DULPXSensor::begin()
+IIS2DULPXStatusTypeDef IIS2DULPXSensor::begin(uint8_t new_address)
 {
   iis2dulpx_i3c_cfg_t val;
   if (dev_spi) {
@@ -77,19 +108,34 @@ IIS2DULPXStatusTypeDef IIS2DULPXSensor::begin()
     pinMode(cs_pin, OUTPUT);
     digitalWrite(cs_pin, HIGH);
     iis2dulpx_exit_deep_power_down(&reg_ctx);
-  } else {
+  } else if (dev_i2c) {
     uint8_t id;
     iis2dulpx_device_id_get(&reg_ctx, &id);
   }
+#if defined(I3C_SUPPORTED)
+  if (dev_i3c) {
+    uint8_t id;
+    if (new_address < 0x08 || new_address > 0x77) {
+      return IIS2DULPX_ERROR;
+    }
+    address = new_address;
+    i3c_dyn7 = new_address;
+    if (ReadID(&id) != IIS2DULPX_OK || id != IIS2DULPX_ID) {
+      return IIS2DULPX_ERROR;
+    }
+  }
+#endif
   delay(25);
 
   /* Disable I3C */
-  if (iis2dulpx_i3c_configure_get(&reg_ctx, &val) != IIS2DULPX_OK) {
-    return IIS2DULPX_ERROR;
-  }
-  val.asf_on = PROPERTY_ENABLE;
-  if (iis2dulpx_i3c_configure_set(&reg_ctx, &val) != IIS2DULPX_OK) {
-    return IIS2DULPX_ERROR;
+  if (bus_type != IIS2DULPX_I3C_BUS) {
+    if (iis2dulpx_i3c_configure_get(&reg_ctx, &val) != IIS2DULPX_OK) {
+      return IIS2DULPX_ERROR;
+    }
+    val.asf_on = PROPERTY_ENABLE;
+    if (iis2dulpx_i3c_configure_set(&reg_ctx, &val) != IIS2DULPX_OK) {
+      return IIS2DULPX_ERROR;
+    }
   }
 
   /* Set main memory bank */

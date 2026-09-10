@@ -1,5 +1,5 @@
 /*
-   @file    IIS2DULPX_6D_Orientation.ino
+   @file    IIS2DULPX_6D_Orientation_I2C.ino
    @author  STMicroelectronics
    @brief   Example to use the IIS2DULPX 6D Orientation
  *******************************************************************************
