@@ -31,9 +31,22 @@ An instance can be created and enabled when the I3C bus is used with SETDASA:
     IIS2DULPXSensor sensor(&I3C, IIS2DULPX_I3C_ADD_H);
     I3C.begin(I3C_SDA, I3C_SCL, 1000000U);
     I3C.resetDynamicAddresses();
+    I3C.isI3CDeviceReady(0x19);
     I3C.assignDynamicAddress(sensor.getStaticAddress(), 0x30);
     sensor.begin(0x30);
     sensor.Enable_X();
+
+An instance can be created and enabled when the I3C bus is used with ENTDAA (dynamic address discovery):  
+
+    IIS2DULPXSensor Accelero(&I3C);
+    I3C.begin(I3C_SDA, I3C_SCL, 1000000U);
+    I3C.isI3CDeviceReady(0x19);
+    I3C.discover(devices, 8, &found);
+    // find dynAddr by matching IIS2DULPX_I3C_PID_H in discovered devices
+    Accelero.begin(dynAddr);
+    I3C.setClock(12500000);
+    Accelero.Enable_X();
+
 
 The access to the sensor values is done as explained below:  
 
