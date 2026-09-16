@@ -29,6 +29,10 @@ void setup()
   if (!I3C.resetDynamicAddresses()) {
     while (1) {}
   }
+  if (!I3C.isI3CDeviceReady(0x19)) {
+    Serial.println("isI3CDeviceReady() failed");
+    while (1) {}
+  }
   if (!I3C.assignDynamicAddress(sensor.getStaticAddress(), IIS2DULPX_DYNAMIC_ADDRESS)) {
     while (1) {}
   }

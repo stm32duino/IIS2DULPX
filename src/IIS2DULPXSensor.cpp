@@ -2,7 +2,7 @@
  ******************************************************************************
  * @file    IIS2DULPXSensor.cpp
  * @author  STMicroelectronics
- * @version V1.1.0
+ * @version V1.1.1
  * @date    September 2026
  * @brief   Implementation of a IIS2DULPX sensor.
  ******************************************************************************
