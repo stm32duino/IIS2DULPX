@@ -2,7 +2,7 @@
  ******************************************************************************
  * @file    IIS2DULPXSensor.h
  * @author  STMicroelectronics
- * @version V1.1.1
+ * @version V1.1.0
  * @date    September 2026
  * @brief   Abstract Class of a IIS2DULPX sensor.
  ******************************************************************************
