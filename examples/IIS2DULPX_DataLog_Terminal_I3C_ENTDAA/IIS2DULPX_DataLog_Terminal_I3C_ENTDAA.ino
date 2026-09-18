@@ -34,12 +34,24 @@ void setup()
     while (1) {}
   }
 
+  uint8_t iisDynAddr = 0U;
+
   for (size_t index = 0; index < found; ++index) {
-    if (sensor.begin(devices[index].dynAddr) == IIS2DULPX_OK) {
+    Serial.println(devices[index].pid, HEX);
+    if (devices[index].pid == IIS2DULPX_I3C_PID_H) {
+      iisDynAddr = devices[index].dynAddr;
+      Serial.print("iisDynAddr=");
+      Serial.println(iisDynAddr, HEX);
       break;
     }
   }
-  if (sensor.getDynAddress() == 0U) {
+
+  if (iisDynAddr == 0U) {
+    Serial.println("IIS2DULPX not found");
+    while (1) {}
+  }
+  if (sensor.begin(iisDynAddr) != IIS2DULPX_OK) {
+    Serial.println("sensor.begin() failed");
     while (1) {}
   }
   if (!I3C.setClock(12500000)) {

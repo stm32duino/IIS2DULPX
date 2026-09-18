@@ -63,6 +63,9 @@
 #if defined(I3C_SUPPORTED)
   #define IIS2DULPX_I3C_ADD_H ((uint8_t)(IIS2DULPX_I2C_ADD_H >> 1))
   #define IIS2DULPX_I3C_ADD_L ((uint8_t)(IIS2DULPX_I2C_ADD_L >> 1))
+
+  static const uint64_t IIS2DULPX_I3C_PID_L = 0x02080047120BULL;
+  static const uint64_t IIS2DULPX_I3C_PID_H = 0x02080047920BULL;
 #endif
 
 #define IIS2DULPX_ACC_SENSITIVITY_FOR_FS_2G   0.061f  /**< Sensitivity value for 2g full scale, Low-power1 mode [mg/LSB] */
