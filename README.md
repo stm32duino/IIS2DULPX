@@ -3,7 +3,7 @@ Arduino library to support the IIS2DULPX 3D sensor
 
 ## API
 
-This sensor uses I2C or SPI to communicate.
+This sensor uses I2C, SPI, or I3C to communicate.
 For I2C it is then required to create a TwoWire interface before accessing to the sensors:  
 
     TwoWire dev_i2c(I2C_SDA, I2C_SCL);  
@@ -26,6 +26,28 @@ An instance can be created and enabled when the SPI bus is used following the pr
     sensor.begin();
     sensor.Enable_X();
 
+An instance can be created and enabled when the I3C bus is used with SETDASA:
+
+    IIS2DULPXSensor sensor(&I3C, IIS2DULPX_I3C_ADD_H);
+    I3C.begin(I3C_SDA, I3C_SCL, 1000000U);
+    I3C.resetDynamicAddresses();
+    I3C.isI3CDeviceReady(0x19);
+    I3C.assignDynamicAddress(sensor.getStaticAddress(), 0x30);
+    sensor.begin(0x30);
+    sensor.Enable_X();
+
+An instance can be created and enabled when the I3C bus is used with ENTDAA (dynamic address discovery):  
+
+    IIS2DULPXSensor Accelero(&I3C);
+    I3C.begin(I3C_SDA, I3C_SCL, 1000000U);
+    I3C.isI3CDeviceReady(0x19);
+    I3C.discover(devices, 8, &found);
+    // find dynAddr by matching IIS2DULPX_I3C_PID_H in discovered devices
+    Accelero.begin(dynAddr);
+    I3C.setClock(12500000);
+    Accelero.Enable_X();
+
+
 The access to the sensor values is done as explained below:  
 
   Read sensor.  
@@ -35,11 +57,15 @@ The access to the sensor values is done as explained below:
 
 ## Examples
 
-* IIS2DULPX_DataLog_Terminal: This application shows how to get data from IIS2DULPX sensor and print them on terminal.
+* IIS2DULPX_DataLog_Terminal_I2C: This application shows how to get data from IIS2DULPX sensor and print them on terminal over I2C.
 
-* IIS2DULPX_6D_Orientation: This application shows how to use IIS2DULPX sensor to find out the 6D orientation and display data on a hyperterminal.
+* IIS2DULPX_6D_Orientation_I2C: This application shows how to use IIS2DULPX sensor to find out the 6D orientation and display data on a hyperterminal over I2C.
 
-* IIS2DULPX_Wake_Up_Detection: This application shows how to detect the wake-up event using the IIS2DULPX sensor.
+* IIS2DULPX_Wake_Up_Detection_I2C: This application shows how to detect the wake-up event using the IIS2DULPX sensor over I2C.
+
+* IIS2DULPX_DataLog_Terminal_I3C: This application shows how to get accelerometer data over I3C using SETDASA.
+
+* IIS2DULPX_DataLog_Terminal_I3C_ENTDAA: This application shows how to discover and use IIS2DULPX over I3C.
 
 ## Documentation
 

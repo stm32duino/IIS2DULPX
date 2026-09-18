@@ -1,5 +1,5 @@
 /*
-   @file    IIS2DULPX_Wake_Up_Detection.ino
+   @file    IIS2DULPX_Wake_Up_Detection_I2C.ino
    @author  STMicroelectronics
    @brief   Example to use the IIS2DULPX Wake Up Detection
  *******************************************************************************

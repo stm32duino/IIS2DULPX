@@ -1,5 +1,5 @@
 /*
-   @file    IIS2DULPX_DataLog_Terminal.ino
+   @file    IIS2DULPX_DataLog_Terminal_I2C.ino
    @author  STMicroelectronics
    @brief   Example to use the IIS2DULPX accelerometer sensor
  *******************************************************************************

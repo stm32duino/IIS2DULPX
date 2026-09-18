@@ -2,8 +2,8 @@
  ******************************************************************************
  * @file    IIS2DULPXSensor.h
  * @author  STMicroelectronics
- * @version V1.0.0
- * @date    30 May 2025
+ * @version V1.1.0
+ * @date    September 2026
  * @brief   Abstract Class of a IIS2DULPX sensor.
  ******************************************************************************
  * @attention
@@ -48,7 +48,26 @@
 #include "Wire.h"
 #include "SPI.h"
 #include "iis2dulpx_reg.h"
+
+#if (defined(I3C1_BASE) || defined(I3C2_BASE)) && !defined(I3C_SUPPORTED)
+  #define I3C_SUPPORTED
+  #include "I3C.h"
+#endif
+
+#define IIS2DULPX_I2C_BUS                     0U
+#define IIS2DULPX_SPI_4WIRES_BUS              1U
+#define IIS2DULPX_SPI_3WIRES_BUS              2U
+#define IIS2DULPX_I3C_BUS                     3U
+
 /* Defines -------------------------------------------------------------------*/
+#if defined(I3C_SUPPORTED)
+  #define IIS2DULPX_I3C_ADD_H ((uint8_t)(IIS2DULPX_I2C_ADD_H >> 1))
+  #define IIS2DULPX_I3C_ADD_L ((uint8_t)(IIS2DULPX_I2C_ADD_L >> 1))
+
+  static const uint64_t IIS2DULPX_I3C_PID_L = 0x02080047120BULL;
+  static const uint64_t IIS2DULPX_I3C_PID_H = 0x02080047920BULL;
+#endif
+
 #define IIS2DULPX_ACC_SENSITIVITY_FOR_FS_2G   0.061f  /**< Sensitivity value for 2g full scale, Low-power1 mode [mg/LSB] */
 #define IIS2DULPX_ACC_SENSITIVITY_FOR_FS_4G   0.122f  /**< Sensitivity value for 4g full scale, Low-power1 mode [mg/LSB] */
 #define IIS2DULPX_ACC_SENSITIVITY_FOR_FS_8G   0.244f  /**< Sensitivity value for 8g full scale, Low-power1 mode [mg/LSB] */
@@ -116,11 +135,18 @@ class IIS2DULPXSensor {
   public:
     IIS2DULPXSensor(TwoWire *i2c, uint8_t address = IIS2DULPX_I2C_ADD_H);
     IIS2DULPXSensor(SPIClass *spi, int cs_pin, uint32_t spi_speed = 2000000);
-    IIS2DULPXStatusTypeDef begin();
+#if defined(I3C_SUPPORTED)
+    IIS2DULPXSensor(I3CBus *i3c, uint8_t static_addr7 = 0);
+#endif
+    IIS2DULPXStatusTypeDef begin(uint8_t new_address = 0);
     IIS2DULPXStatusTypeDef end();
     IIS2DULPXStatusTypeDef ExitDeepPowerDownI2C();
     IIS2DULPXStatusTypeDef ExitDeepPowerDownSPI();
     IIS2DULPXStatusTypeDef ReadID(uint8_t *Id);
+#if defined(I3C_SUPPORTED)
+    uint8_t getStaticAddress() const;
+    uint8_t getDynAddress() const;
+#endif
     IIS2DULPXStatusTypeDef Enable_X();
     IIS2DULPXStatusTypeDef Disable_X();
     IIS2DULPXStatusTypeDef Get_X_Sensitivity(float *Sensitivity);
@@ -188,6 +214,13 @@ class IIS2DULPXSensor {
         }
         return 0;
       }
+#if defined(I3C_SUPPORTED)
+      if (dev_i3c) {
+        if (dev_i3c->readRegBuffer(address, RegisterAddr, pBuffer, NumByteToRead) == 0) {
+          return 0;
+        }
+      }
+#endif
       return 1;
     }
     /**
@@ -221,6 +254,13 @@ class IIS2DULPXSensor {
         dev_i2c->endTransmission(true);
         return 0;
       }
+#if defined(I3C_SUPPORTED)
+      if (dev_i3c) {
+        if (dev_i3c->writeRegBuffer(address, RegisterAddr, pBuffer, NumByteToWrite) == 0) {
+          return 0;
+        }
+      }
+#endif
       return 1;
     }
   private:
@@ -229,7 +269,11 @@ class IIS2DULPXSensor {
     /* Helper classes. */
     TwoWire  *dev_i2c;
     SPIClass *dev_spi;
+#if defined(I3C_SUPPORTED)
+    I3CBus   *dev_i3c;
+#endif
     /* Configuration */
+    uint32_t bus_type; /*0 means I2C, 1 means SPI 4-Wires, 2 means SPI-3-Wires, 3 means I3C */
     uint8_t  address;
     int      cs_pin;
     uint32_t spi_speed;
@@ -237,6 +281,10 @@ class IIS2DULPXSensor {
     uint8_t  acc_is_enabled;
     float   acc_odr;
     IIS2DULPX_Power_Mode_t power_mode;
+#if defined(I3C_SUPPORTED)
+    uint8_t i3c_static7;
+    uint8_t i3c_dyn7;
+#endif
     iis2dulpx_ctx_t reg_ctx;
 };
 #ifdef __cplusplus
